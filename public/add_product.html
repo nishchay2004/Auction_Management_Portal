@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add Product Form</title>
+    <link rel="stylesheet" type="text/css" href="add_productC.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Function to retrieve token from local storage
+            function getTokenFromStorage() {
+                // return localStorage.getItem('token');
+                var urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('token');
+            }
+
+            // Retrieve the token from local storage
+            var token = getTokenFromStorage();
+
+            // Set the token value in the hidden input field
+            $("#tokenInput").val(token);
+            $("#tokenDisplay").text("Token: " + token);
+        });
+    </script>
+</head>
+
+<body>
+    <div class="form-container">
+        <p id="tokenDisplay"></p>
+        <h2>Add Product Form</h2>
+        <form action="/add_product" method="POST">
+            <!-- Hidden input field to pass the token -->
+            <input type="hidden" id="tokenInput" name="token"> <!-- Added hidden input field for token -->
+            <div>
+                <label for="ownerName">Owner Name:</label>
+                <input type="text" id="owner_name" name="ownerName" placeholder="Enter owner name" required>
+            </div>
+            <div>
+                <label for="itemName">Item Name:</label>
+                <input type="text" id="item_name" name="itemName" placeholder="Enter item name" required>
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="3" placeholder="Enter description"
+                    required></textarea>
+            </div>
+            <div>
+                <label for="basicAmount">Basic Amount:</label>
+                <input type="number" id="basic_amount" name="basicAmount" placeholder="Enter basic amount" required>
+            </div>
+            <div>
+                <label for="startDate">Start Date:</label>
+                <input type="text" id="start_date" name="startDate" placeholder="Enter start date (YYYY-MM-DD)"
+                    required>
+            </div>
+            <div>
+                <label for="endDate">End Date:</label>
+                <input type="text" id="end_date" name="endDate" placeholder="Enter end date (YYYY-MM-DD)" required>
+            </div>
+            <div>
+                <input type="submit" value="Add Product for auction">
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
