@@ -1,22 +1,10 @@
 <!DOCTYPE html>
-<html> 
-
+<html>
 <head>
-    <link rel="stylesheet" type="text/css" href="baseC.css">
+    <link rel="stylesheet" type="text/css" href="homeC.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // updated the code here 
-            function getTokenFromUrl() {
-                var urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get('token');
-            }
-            var token = getTokenFromUrl() || localStorage.getItem("token"); // Retrieve token from URL parameters or local storage
-
-            $("#tokenDisplay").text("Token: " + token);
-            $("#addProductLink").attr("href", "add_product.html?token=" + token);
-
-            // Function to fetch all products from backend
             function fetchProducts() {
                 // Function to retrieve token from URL parameters
                 $.ajax({
@@ -39,35 +27,30 @@
 
                 products.forEach(function (product, index) {
                     var row = "<tr>" +
-                        // "<td>" + (index + 1) + "</td>" +
-                        "<td>" + product.ownerName + "</td>" +
-                        "<td>" + product.itemName + "</td>" +
-                        "<td>" + product.basicAmount + "</td>" +
-                        "<td>" + product.description + "</td>" +
-                        "<td>" + product.startDate + "</td>" +
-                        "<td>" + product.endDate + "</td>" +
-                        "<td><a href='applybid.html' target='_blank'>Apply</a></td>" +
-                        "</tr>";
+                    // "<td>" + (index + 1) + "</td>" +
+                    "<td>" + product.ownerName + "</td>" +
+                    "<td>" + product.itemName + "</td>" +
+                    "<td>" + product.basicAmount + "</td>" +
+                    "<td>" + product.description + "</td>" +
+                    "<td>" + product.startDate + "</td>" +
+                    "<td>" + product.endDate + "</td>" +
+                    "</tr>";
                     tbody.append(row); // Append row to table body
                 });
             }
-
-            // Call fetchProducts function when the page loads
             fetchProducts();
         });
+
     </script>
 </head>
-
 <body>
 
     <center>
         <h2>Available Auction</h2>
     </center>
-    <div class="nav-bar">
-        <a href="home.html">Logout</a>
-        <a id="addProductLink" href="#">Add Product</a>
-    </div>
 
+    <a id="loginID" href="login.html">Login</a>
+    
     <table>
         <thead>
             <tr>
@@ -78,7 +61,6 @@
                 <th>Description</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -86,8 +68,5 @@
         </tbody>
     </table>
 
-    <!-- <p id="tokenDisplay"></p> -->
-
 </body>
-
 </html>

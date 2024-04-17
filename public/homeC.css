@@ -4,8 +4,19 @@ table {
     width: 100%;
 }
 
+#loginID{
+    border-radius: 3px;
+    background-color: #f44336;
+    color: white;
+    padding: 8px 15px;
+    margin-bottom: 0.5%;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;    
+}
+
 td, th {
-    border: 1px solid #dddddd; 
+    border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
 }
@@ -14,36 +25,16 @@ tr:nth-child(even) {
     background-color: #dddddd;
 }
 
-#deleteButton {
-    font-size: medium;
-    background-color: #f44336;
-    color: white;
-    padding: 4px 6px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-#deleteButton:hover {
-    background-color: blue;
-}
-
 a:link, a:visited {
+    border-radius: 3px;
     background-color: #f44336;
     color: white;
-    padding: 4px 7px;
+    padding: 14px 25px;
     text-align: right;
     text-decoration: none;
     display: inline-block;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
 }
 
 a:hover, a:active {
     background-color: Blue;
-}
-
-.nav-bar {
-    margin-bottom: 0.5%;
 }

@@ -39,7 +39,8 @@
 
                 products.forEach(function (product, index) {
                     var row = "<tr>" +
-                        "<td>" + (index + 1) + "</td>" +
+                        // "<td>" + (index + 1) + "</td>" +
+                        "<td>" + product.itemName + "</td>" +
                         "<td>" + product.itemName + "</td>" +
                         "<td>" + product.basicAmount + "</td>" +
                         "<td>" + product.description + "</td>" +
@@ -63,7 +64,7 @@
     <center>
         <h2>Available Auction</h2>
     </center>
-    <div>
+    <div class="nav-bar" >
         <a href="home.html">Logout</a>
         <a id="addProductLink" href="#"">Add Product</a>
     </div>
@@ -71,7 +72,8 @@
     <table>
         <thead>
             <tr>
-                <th>SNo.</th>
+                <!-- <th>SNo.</th> -->
+                <th>Owner Name</th>
                 <th>Product Name</th>
                 <th>Bid Amount</th>
                 <th>Description</th>

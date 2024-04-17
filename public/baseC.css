@@ -4,8 +4,7 @@ table {
     width: 100%;
 }
 
-td,
-th {
+td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
@@ -15,17 +14,20 @@ tr:nth-child(even) {
     background-color: #dddddd;
 }
 
-a:link,
-a:visited {
+a:link, a:visited {
+    border-radius: 3px;
     background-color: #f44336;
     color: white;
-    padding: 14px 25px;
+    padding: 4px 7px;
     text-align: right;
     text-decoration: none;
-    display: inline-block;
+    display: inline-block; 
 }
 
-a:hover,
-a:active {
+a:hover, a:active {
     background-color: Blue;
+}
+
+.nav-bar{
+    margin-bottom: 0.5%;
 }
