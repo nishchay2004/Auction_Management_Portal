@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html> 
+<html>
 
 <head>
-    <link rel="stylesheet" type="text/css" href="baseC.css">
+    <link rel="stylesheet" type="text/css" href="admin_pageC.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -46,6 +46,7 @@
                         "<td>" + product.startDate + "</td>" +
                         "<td>" + product.endDate + "</td>" +
                         "<td><a href='applybid.html' target='_blank'>Apply</a></td>" +
+                        "<td><button id='deleteButton' onclick='deleteRow(this)'>Delete</button></td>" +
                         "</tr>";
                     tbody.append(row); // Append row to table body
                 });
@@ -64,7 +65,7 @@
     </center>
     <div>
         <a href="home.html">Logout</a>
-        <a id="addProductLink" href="#">Add Product</a>
+        <a id="addProductLink" href="#"">Add Product</a>
     </div>
 
     <table>
@@ -77,6 +78,7 @@
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Action</th>
+                <th>Delete</th> <!-- Added a new header for the delete column -->
             </tr>
         </thead>
         <tbody>
@@ -85,6 +87,37 @@
     </table>
 
     <!-- <p id="tokenDisplay"></p> -->
+
+<script>
+    // Function to delete row
+    function deleteRow(btn) {
+        // with end point
+        //var row = btn.parentNode.parentNode;
+        //var productName = row.cells[1].innerText; // Get the product name from the second column
+        //var token = getTokenFromUrl() || localStorage.getItem("token");
+        
+        // $.ajax({
+            //    url: "/deleteProduct", // URL of the deleteProduct endpoint
+            //    type: "DELETE",
+            //    headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
+            //    data: { productName: productName }, // Send the product name as data to the backend
+            //    success: function(response) {
+                //        // Remove the row from the table if the deletion was successful
+                //        row.parentNode.removeChild(row);
+                //        console.log("Product deleted successfully:", response);
+                
+                //    },
+                //    error: function(xhr, status, error) {
+                    //        console.error("Error deleting product:", error);
+                    //    }
+                    //});
+                    
+
+        // without end point
+        var row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+</script>
 
 </body>
 
