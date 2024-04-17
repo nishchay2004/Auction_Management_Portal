@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html> 
+<html>
 
 <head>
-    <link rel="stylesheet" type="text/css" href="baseC.css">
+    <link rel="stylesheet" type="text/css" href="deleted_productsC.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // console.log("Hii");
         $(document).ready(function () {
-            // updated the code here 
             function getTokenFromUrl() {
                 var urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get('token');
@@ -15,17 +13,18 @@
             console.log("hello");
             var token = getTokenFromUrl() || localStorage.getItem("token"); // Retrieve token from URL parameters or local storage
 
-            $("#tokenDisplay").text("Token: " + token);
-            $("#addProductLink").attr("href", "add_product.html?token=" + token);
-            $("#deletedProductsLink").attr("href", "deleted_products.html?token=" + token);
+            $("#baseLink").attr("href", "base.html?token=" + token);
 
-            // Function to fetch all products from backend
             function fetchProducts() {
-                // Function to retrieve token from URL parameters
-                $.ajax({
-                    url: "/products", // URL to fetch products from backend
+                // Function to retrieve to  ken from URL parameters
+                 $.ajax({
+                    url: "/getDeletedProducts", // URL to fetch products from backend
                     type: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + token // Pass the token as a Bearer token in the Authorization header
+                    },
                     success: function (response) {
+                        // console.log("h1");
                         // Handle successful response
                         displayProducts(response);
                     },
@@ -45,37 +44,24 @@
                         // "<td>" + (index + 1) + "</td>" +
                         "<td>" + product.ownerName + "</td>" +
                         "<td>" + product.itemName + "</td>" +
-                        "<td>" + product.basicAmount + "</td>" +
                         "<td>" + product.description + "</td>" +
-                        "<td>" + product.startDate + "</td>" +
-                        "<td>" + product.endDate + "</td>" +
-                        "<td><a href='applybid.html?ownerName=" + 
-                            encodeURIComponent(product.ownerName) + 
-                            "&itemName=" + encodeURIComponent(product.itemName) + 
-                            "&basicAmount=" + encodeURIComponent(product.basicAmount) + 
-                            "&token=" + (token) +
-                                "'>Apply</a></td>" +
                         "</tr>";
                     tbody.append(row); // Append row to table body
                 });
             }
-
-            // Call fetchProducts function when the page loads
             fetchProducts();
         });
+
     </script>
 </head>
 
 <body>
 
     <center>
-        <h2>Available Auction</h2>
+        <h2>Deleted Products</h2>
     </center>
-    <div class="nav-bar">
-        <a href="home.html">Logout</a>
-        <a id="addProductLink" href="#">Add Product</a>
-        <a id="deletedProductsLink" href="#">See deleted products</a>
-    </div>
+
+    <a id="baseLink" href="#">Back to home page</a>
 
     <table>
         <thead>
@@ -83,19 +69,13 @@
                 <!-- <th>SNo.</th> -->
                 <th>Owner Name</th>
                 <th>Product Name</th>
-                <th>Bid Amount</th>
                 <th>Description</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             <!-- Products will be dynamically inserted here -->
         </tbody>
     </table>
-
-    <!-- <p id="tokenDisplay"></p> -->
 
 </body>
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Auction Item Form</title>
+    <link rel="stylesheet" type="text/css" href="applybidC.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to decode URL parameters
+            function getUrlParameter(name) {
+                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                var results = regex.exec(location.search);
+                return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+            }
+
+            function getTokenFromUrl() {
+                var urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('token');
+            }
+
+            var token = getTokenFromUrl() || localStorage.getItem("token");
+            var itemName = getUrlParameter('itemName');
+            var ownerName = getUrlParameter('ownerName');
+            var basicAmount = getUrlParameter('basicAmount');
+
+            console.log(token);
+            // Populate form fields with decoded values
+            document.getElementById("itemName").value = itemName;
+            document.getElementById("ownerName").value = ownerName;
+            document.getElementById("bidAmount").value = basicAmount;
+            document.getElementById("max_bid").min = basicAmount;
+            document.getElementById("token").value = token;
+
+            document.getElementById("bidForm").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent default form submission
+                consol.log("hi1");
+                
+                var formData = new FormData();
+                formData.append('itemName', itemName);
+                formData.append('ownerName', ownerName);
+                formData.append('bidAmount', document.getElementById("max_bid").value);
+                
+                consol.log(formData);
+
+                // Create XMLHttpRequest object
+                var xhr = new XMLHttpRequest();
+
+                // Open POST request to /bid endpoint
+                xhr.open("POST", "/bid", true);
+
+                // Set token in request header
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+
+                // Set up onload callback function
+                xhr.onload = function () {
+                    // Handle response here
+                    if (xhr.status === 200) {
+                        console.log("Bid successful");
+                        // Add your code for success handling here
+                    } else {
+                        console.error("Bid failed:", xhr.responseText);
+                        // Add your code for error handling here
+                    }
+                };
+
+                // Send form data
+                xhr.send(formData);
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Auction Participation Form</h2>
+        <form id="bidForm">
+            <div>
+                <label for="ownerName">Owner Name:</label>
+                <input type="text" id="ownerName" name="ownerName" readonly>
+            </div>
+            <div>
+                <label for="itemName">Item Name:</label>
+                <input type="text" id="itemName" name="itemName" readonly>
+            </div>
+            <div>
+                <label for="bidAmount">Current Amount:</label>
+                <input type="number" id="bidAmount" name="bidAmount" readonly>
+            </div>
+            <div>
+                <label for="max_bid">Your Bid:</label>
+                <input type="number" id="max_bid" name="max_bid" required>
+            </div>
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

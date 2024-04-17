@@ -33,7 +33,7 @@
     try {
       const { username, email, password, phone } = req.body;
 
-      console.log(req.body);
+      // console.log(req.body);
 
       // Check if user already exists
       const existingUser = await User.findOne({ email });
@@ -77,13 +77,13 @@
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       if(email==='admin@gmail.com' && password==='admin@123'){
-        // res.redirect('/admin_page.html?token=' + token);
+        res.redirect('/admin_page.html?token=' + token);
       }else{
-        // res.redirect("/base.html?token=" + token);
+        res.redirect("/base.html?token=" + token);
       }
 
       // Send token in response
-      res.json({ token });
+      // res.json({ token });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
@@ -128,7 +128,7 @@
 
       // Save product to database
       await newProduct.save();
-      console.log("Product added successfully");
+      // console.log("Product added successfully");
       
       // res.status(201).json({ message: "Product added successfully" });
       let redirectUrl = '/base.html?token=' + token;
@@ -178,7 +178,7 @@
       const ownerName = req.body.ownerName.trim(); // Trim leading and trailing whitespace
       const itemName = req.body.itemName.trim(); // Trim leading and trailing whitespace
 
-      console.log(req.body);
+      // console.log(req.body);
       
       // Verify if the authenticated user is admin
       const authenticatedUser = req.user; // User information attached by authenticateToken middleware
@@ -195,10 +195,10 @@
       // console.log(productToDelete);
 
       if (!productToDelete) {
-        console.log('Product not found:', { ownerName, itemName });
+        // console.log('Product not found:', { ownerName, itemName });
         return res.status(404).json({ message: "Product not found" });
       }
-      console.log('hii3');
+      // console.log('hii3');
   
       // Create a new DeletedProduct object with the data of the deleted product
       const deletedProduct = new DeletedProduct(productToDelete.toObject());
@@ -223,8 +223,10 @@
 
   // Define a new route to get all deleted products
   app.get("/getDeletedProducts", authenticateToken, async (req, res) => {
+    // console.log("h1");
     try {
         // Fetch all deleted products from the DeletedProduct collection
+        // console.log("fetched");
         const deletedProducts = await DeletedProduct.find();
 
         // Send the deleted products as JSON response
