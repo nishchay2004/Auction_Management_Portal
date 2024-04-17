@@ -9,9 +9,9 @@
             // updated the code here 
             function getTokenFromUrl() {
                 var urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get('token');
+                return urlParams.get('token') || localStorage.getItem("token");
             }
-            var token = getTokenFromUrl() || localStorage.getItem("token"); // Retrieve token from URL parameters or local storage
+            var token = getTokenFromUrl(); // Retrieve token from URL parameters or local storage
 
             $("#tokenDisplay").text("Token: " + token);
             $("#addProductLink").attr("href", "add_product.html?token=" + token);
@@ -40,7 +40,7 @@
                 products.forEach(function (product, index) {
                     var row = "<tr>" +
                         // "<td>" + (index + 1) + "</td>" +
-                        "<td>" + product.itemName + "</td>" +
+                        "<td>" + product.ownerName + "</td>" +
                         "<td>" + product.itemName + "</td>" +
                         "<td>" + product.basicAmount + "</td>" +
                         "<td>" + product.description + "</td>" +
@@ -66,7 +66,7 @@
     </center>
     <div class="nav-bar" >
         <a href="home.html">Logout</a>
-        <a id="addProductLink" href="#"">Add Product</a>
+        <a id="addProductLink" href="#">Add Product</a>
     </div>
 
     <table>
@@ -90,34 +90,44 @@
 
     <!-- <p id="tokenDisplay"></p> -->
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    function getTokenFromUrl() {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('token') || localStorage.getItem("token");
+    }
+
     // Function to delete row
     function deleteRow(btn) {
         // with end point
-        //var row = btn.parentNode.parentNode;
-        //var productName = row.cells[1].innerText; // Get the product name from the second column
-        //var token = getTokenFromUrl() || localStorage.getItem("token");
-        
-        // $.ajax({
-            //    url: "/deleteProduct", // URL of the deleteProduct endpoint
-            //    type: "DELETE",
-            //    headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
-            //    data: { productName: productName }, // Send the product name as data to the backend
-            //    success: function(response) {
-                //        // Remove the row from the table if the deletion was successful
-                //        row.parentNode.removeChild(row);
-                //        console.log("Product deleted successfully:", response);
-                
-                //    },
-                //    error: function(xhr, status, error) {
-                    //        console.error("Error deleting product:", error);
-                    //    }
-                    //});
-                    
-
-        // without end point
         var row = btn.parentNode.parentNode;
-        row.parentNode.removeChild(row);
+        var ownerName = row.cells[0].innerText.trim(); // Get the owner name from the first column
+        var itemName = row.cells[1].innerText.trim(); // Get the product name from the second column
+        var token = getTokenFromUrl() || localStorage.getItem("token");
+        console.log(ownerName, itemName);
+        
+        $.ajax({
+            url: "/deleteProduct", // URL of the deleteProduct endpoint
+            type: "DELETE",
+            headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
+            data: { ownerName: ownerName, itemName: itemName }, // Send the product name as data to the backend
+            // contentType: 'application/json', // Added content type
+            success: function(response) {
+                row.parentNode.removeChild(row);
+                // Remove the row from the table if the deletion was successful
+                //    window.location.href = response.redirectUrl;
+                console.log("Product deleted successfully:", response);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error deleting product:", error);
+                }
+        });
+                
+                
+        // without end point
+        // var row = btn.parentNode.parentNode;
+        // row.parentNode.removeChild(row);
     }
 </script>
 

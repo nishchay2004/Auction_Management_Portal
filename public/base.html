@@ -5,12 +5,14 @@
     <link rel="stylesheet" type="text/css" href="baseC.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        console.log("Hii");
         $(document).ready(function () {
             // updated the code here 
             function getTokenFromUrl() {
                 var urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get('token');
             }
+            console.log("hello");
             var token = getTokenFromUrl() || localStorage.getItem("token"); // Retrieve token from URL parameters or local storage
 
             $("#tokenDisplay").text("Token: " + token);
@@ -86,7 +88,7 @@
         </tbody>
     </table>
 
-    <!-- <p id="tokenDisplay"></p> -->
+    <p id="tokenDisplay"></p>
 
 </body>
 

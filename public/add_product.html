@@ -9,7 +9,6 @@
         $(document).ready(function () {
             // Function to retrieve token from local storage
             function getTokenFromStorage() {
-                // return localStorage.getItem('token');
                 var urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get('token');
             }
@@ -19,7 +18,30 @@
 
             // Set the token value in the hidden input field
             $("#tokenInput").val(token);
-            $("#tokenDisplay").text("Token: " + token);
+
+            // Intercept form submission
+            $("form").submit(function (event) {
+                // console.log("Form submitted");
+                event.preventDefault(); // Prevent the default form submission
+
+                var formData = $(this).serialize(); // Serialize form data
+                var url = $(this).attr("action"); // Get the form action URL
+
+                // Send AJAX request with token in the header
+                $.ajax({
+                    url: '/add_product',
+                    type: "POST",
+                    headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
+                    data: formData,
+                    success: function(response) {
+                        // Handle the redirection
+                        window.location.href = response.redirectUrl;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error adding product:", error);
+                    }
+                });
+            });
         });
     </script>
 </head>
@@ -30,7 +52,8 @@
         <h2>Add Product Form</h2>
         <form action="/add_product" method="POST">
             <!-- Hidden input field to pass the token -->
-            <input type="hidden" id="tokenInput" name="token"> <!-- Added hidden input field for token -->
+            <!-- <input type="hidden" id="tokenInput" name="token"> Added hidden input field for token -->
+            
             <div>
                 <label for="ownerName">Owner Name:</label>
                 <input type="text" id="owner_name" name="ownerName" placeholder="Enter owner name" required>
