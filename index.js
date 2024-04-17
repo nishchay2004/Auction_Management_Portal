@@ -7,6 +7,10 @@
   const authenticateToken = require("./middleware/authenticateToken");
   const Product = require("./models/Product");
   const DeletedProduct = require("./models/DeletedProduct");
+  const Bidder = require("./models/Bidder");
+  const SoldOutProduct = require("./models/SoldOutProduct");
+  const cron = require("node-cron");
+  const User = require("./models/User");
 
   const app = express();
   dotenv.config();
@@ -20,12 +24,10 @@
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log(err));
 
-  // User model
-  const User = mongoose.model("User", {
-    username: String,
-    email: String,
-    phone: String,
-    password: String
+
+
+  app.get("/", (req, res) => {
+    res.redirect('/home.html');
   });
 
   // Registration endpoint
@@ -237,7 +239,102 @@
     }
   });
 
+  app.post("/bid", authenticateToken, async (req, res) => {
+    try {
+      const { itemName, ownerName, bidAmount } = req.body;
+      const biduser = await User.findById(req.user.userId);
+      const bidder = biduser.username;
+      // console.log(bidder);
+      
+      console.log(req.body);
+      // Check if all required fields are provided
+      if (!itemName || !ownerName || !bidAmount) {
+        console.log("bid1");
+        return res.status(400).json({ message: "All fields are required" });
+      }
+  
+      // Find the product by itemName and ownerName
+      const product = await Product.findOne({ itemName, ownerName });
+  
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+  
+      // Check if bid amount is greater than current basic amount
+      console.log(bidAmount);
+      console.log(product.basicAmount);
+      if (bidAmount > product.basicAmount) {
+        // Update basic amount with the new bid
+        product.basicAmount = bidAmount;
+        await product.save();
+  
+        // Delete previous lower bids for the same ownerName and itemName
+        await Bidder.deleteMany({ itemName, ownerName, bidAmount: { $lt: bidAmount } });
+  
+  
+        // Save the bid details
+        const newBid = new Bidder({
+          itemName,
+          ownerName,
+          bidAmount,
+          bidder: bidder // Assuming userId is the username
+        });
+        await newBid.save();
+  
+        return res.status(200).json({ message: "Bid placed successfully" });
+      } else {
+        return res.status(400).json({ message: "Bid amount should be higher than current basic amount" });
+      }
+    } catch (error) {
+      console.error("Error placing bid:", error);
+      res.status(500).json({ message: "Failed to place bid" });
+    }
+  });
+  
+  async function moveSoldOutProducts() {
+    try {
+      const currentDate = new Date();
+      // Find products whose end dates have passed
+      const soldOutProducts = await Product.find({ endDate: { $lt: currentDate } });
+      // Iterate over each sold out product
+      for (const product of soldOutProducts) {
+        // Find the corresponding bidder for the product
+        const bidderInfo = await Bidder.findOne({ itemName: product.itemName, ownerName: product.ownerName });
+        // Create a new sold out product object with bidder information
+        const soldOutProduct = new SoldOutProduct({
+          itemName: product.itemName,
+          ownerName: product.ownerName,
+          bidder: bidderInfo ? bidderInfo.bidder :"No Bidder Found",
+          bidAmount: bidderInfo ? bidderInfo.bidAmount : 0
+        });
+        // Save the sold out product
+        await soldOutProduct.save();
+      }
+      // Remove sold out products from Product collection
+      await Product.deleteMany({ endDate: { $lt: currentDate } });
+    } catch (error) {
+      console.error("Error moving sold out products:", error);
+    }
+  }
+  
+  // Define a cron job to execute moveSoldOutProducts function every day at midnight
+  cron.schedule("0 0 * * *", async () => {
+    console.log("Running cron job to move sold-out products...");
+    await moveSoldOutProducts();
+  });
+  
 
+
+  app.get('/soldOutProducts',authenticateToken, async (req, res) => {
+    try {
+        // Fetch all sold-out products from the SoldOutProduct collection
+        const soldOutProducts = await SoldOutProduct.find();
+        res.json(soldOutProducts);
+    } catch (error) {
+        console.error("Error fetching sold-out products:", error);
+        res.status(500).json({ message: "Failed to fetch sold-out products" });
+    }
+});
 
 
 

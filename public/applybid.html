@@ -4,8 +4,43 @@
 <head>
     <title>Auction Item Form</title>
     <link rel="stylesheet" type="text/css" href="applybidC.css">
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Auction Participation Form</h2>
+        <form id="bidForm" action="/bid" method="POST">
+            <div>
+                <label for="ownerName">Owner Name:</label>
+                <input type="text" id="ownerName" name="ownerName" readonly>
+            </div>
+            <div>
+                <label for="itemName">Item Name:</label>
+                <input type="text" id="itemName" name="itemName" readonly>
+            </div>
+            <div>
+                <label for="bidAmount">Current Amount:</label>
+                <input type="number" id="bidAmount" name="currAmount" readonly>
+            </div>
+            <div>
+                <label for="max_bid">Your Bid:</label>
+                <input type="number" id="max_bid" name="bidAmount" required>
+            </div>
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            var itemNameInput = document.getElementById("itemName");
+            var ownerNameInput = document.getElementById("ownerName");
+            var bidAmountInput = document.getElementById("bidAmount");
+            var maxBidInput = document.getElementById("max_bid");
+
             // Function to decode URL parameters
             function getUrlParameter(name) {
                 name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -14,6 +49,7 @@
                 return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
             }
 
+            // Function to get token from URL or local storage
             function getTokenFromUrl() {
                 var urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get('token');
@@ -26,77 +62,36 @@
 
             console.log(token);
             // Populate form fields with decoded values
-            document.getElementById("itemName").value = itemName;
-            document.getElementById("ownerName").value = ownerName;
-            document.getElementById("bidAmount").value = basicAmount;
-            document.getElementById("max_bid").min = basicAmount;
-            document.getElementById("token").value = token;
+            itemNameInput.value = itemName;
+            ownerNameInput.value = ownerName;
+            bidAmountInput.value = basicAmount;
+            maxBidInput.min = basicAmount;
 
             document.getElementById("bidForm").addEventListener("submit", function (event) {
                 event.preventDefault(); // Prevent default form submission
-                consol.log("hi1");
-                
-                var formData = new FormData();
-                formData.append('itemName', itemName);
-                formData.append('ownerName', ownerName);
-                formData.append('bidAmount', document.getElementById("max_bid").value);
-                
-                consol.log(formData);
 
-                // Create XMLHttpRequest object
-                var xhr = new XMLHttpRequest();
+                var formData = $(this).serialize(); // Serialize form data
+                var url = $(this).attr("action"); // Get the form action URL
 
-                // Open POST request to /bid endpoint
-                xhr.open("POST", "/bid", true);
-
-                // Set token in request header
-                xhr.setRequestHeader("Authorization", "Bearer " + token);
-
-                // Set up onload callback function
-                xhr.onload = function () {
-                    // Handle response here
-                    if (xhr.status === 200) {
+                $.ajax({
+                    url: '/bid',
+                    type: "POST",
+                    headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
+                    data: formData,
+                    success: function(response) {
+                        // Handle the redirection
+                        window.location.href = '/base.html?token=' + token;
                         console.log("Bid successful");
-                        // Add your code for success handling here
-                    } else {
-                        console.error("Bid failed:", xhr.responseText);
-                        // Add your code for error handling here
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error adding product:", error);
                     }
-                };
+                });
 
-                // Send form data
-                xhr.send(formData);
             });
 
         });
     </script>
-</head>
-
-<body>
-    <div class="form-container">
-        <h2>Auction Participation Form</h2>
-        <form id="bidForm">
-            <div>
-                <label for="ownerName">Owner Name:</label>
-                <input type="text" id="ownerName" name="ownerName" readonly>
-            </div>
-            <div>
-                <label for="itemName">Item Name:</label>
-                <input type="text" id="itemName" name="itemName" readonly>
-            </div>
-            <div>
-                <label for="bidAmount">Current Amount:</label>
-                <input type="number" id="bidAmount" name="bidAmount" readonly>
-            </div>
-            <div>
-                <label for="max_bid">Your Bid:</label>
-                <input type="number" id="max_bid" name="max_bid" required>
-            </div>
-            <div>
-                <input type="submit" value="Submit">
-            </div>
-        </form>
-    </div>
 </body>
 
 </html>
