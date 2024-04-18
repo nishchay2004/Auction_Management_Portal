@@ -38,7 +38,8 @@ app.post("/register", async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.redirect('/register.html?loginError=1,UserAlreadyExists');
+      // return res.status(400).json({ message: "User already exists" });
     }
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -70,7 +71,8 @@ app.post("/login", async (req, res) => {
     // Verify password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid password" });
+      // return res.status(401).json({ message: "Invalid password" });
+      return res.redirect('/login.html?loginError=1,InvalidPassword');
     }
 
     // Generate JWT token

@@ -12,6 +12,7 @@ body {
 }
 .form-group {
     margin-bottom: 15px;
+    padding-right: 10px;
 }
 label {
     display: block;
@@ -34,4 +35,8 @@ input[type="submit"] {
     border-radius: 3px;
     padding: 10px 20px;
     cursor: pointer;
+}
+a {
+    text-decoration: none;
+    color: #007BFF;
 }

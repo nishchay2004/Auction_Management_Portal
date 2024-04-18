@@ -21,7 +21,6 @@
 
             // Intercept form submission
             $("form").submit(function (event) {
-                // console.log("Form submitted");
                 event.preventDefault(); // Prevent the default form submission
 
                 var formData = $(this).serialize(); // Serialize form data
@@ -48,12 +47,8 @@
 
 <body>
     <div class="form-container">
-        <!-- <p id="tokenDisplay"></p> -->
         <h2>Add Product Form</h2>
         <form action="/add_product" method="POST">
-            <!-- Hidden input field to pass the token -->
-            <!-- <input type="hidden" id="tokenInput" name="token"> Added hidden input field for token -->
-            
             <div>
                 <label for="ownerName">Owner Name:</label>
                 <input type="text" id="owner_name" name="ownerName" placeholder="Enter owner name" required>

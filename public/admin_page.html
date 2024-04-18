@@ -6,7 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // updated the code here 
+
             function getTokenFromUrl() {
                 var urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get('token') || localStorage.getItem("token");
@@ -23,7 +23,6 @@
                     url: "/products", // URL to fetch products from backend
                     type: "GET",
                     success: function (response) {
-                        // Handle successful response
                         displayProducts(response);
                     },
                     error: function (xhr, status, error) {
@@ -39,14 +38,12 @@
 
                 products.forEach(function (product, index) {
                     var row = "<tr>" +
-                        // "<td>" + (index + 1) + "</td>" +
                         "<td>" + product.ownerName + "</td>" +
                         "<td>" + product.itemName + "</td>" +
                         "<td>" + product.basicAmount + "</td>" +
                         "<td>" + product.description + "</td>" +
                         "<td>" + product.startDate + "</td>" +
                         "<td>" + product.endDate + "</td>" +
-                        "<td><a href='applybid.html' target='_blank'>Apply</a></td>" +
                         "<td><button id='deleteButton' onclick='deleteRow(this)'>Delete</button></td>" +
                         "</tr>";
                     tbody.append(row); // Append row to table body
@@ -60,7 +57,6 @@
 </head>
 
 <body>
-
     <center>
         <h2>Available Auction</h2>
     </center>
@@ -72,15 +68,13 @@
     <table>
         <thead>
             <tr>
-                <!-- <th>SNo.</th> -->
                 <th>Owner Name</th>
                 <th>Product Name</th>
                 <th>Bid Amount</th>
                 <th>Description</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Action</th>
-                <th>Delete</th> <!-- Added a new header for the delete column -->
+                <th>Delete</th> 
             </tr>
         </thead>
         <tbody>
@@ -88,49 +82,38 @@
         </tbody>
     </table>
 
-    <!-- <p id="tokenDisplay"></p> -->
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function getTokenFromUrl() {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('token') || localStorage.getItem("token");
+        }
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function getTokenFromUrl() {
-        var urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('token') || localStorage.getItem("token");
-    }
-
-    // Function to delete row
-    function deleteRow(btn) {
-        // with end point
-        var row = btn.parentNode.parentNode;
-        var ownerName = row.cells[0].innerText.trim(); // Get the owner name from the first column
-        var itemName = row.cells[1].innerText.trim(); // Get the product name from the second column
-        var token = getTokenFromUrl() || localStorage.getItem("token");
-        console.log(ownerName, itemName);
-        
-        $.ajax({
-            url: "/deleteProduct", // URL of the deleteProduct endpoint
-            type: "DELETE",
-            headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
-            data: { ownerName: ownerName, itemName: itemName }, // Send the product name as data to the backend
-            // contentType: 'application/json', // Added content type
-            success: function(response) {
-                row.parentNode.removeChild(row);
-                // Remove the row from the table if the deletion was successful
-                //    window.location.href = response.redirectUrl;
-                console.log("Product deleted successfully:", response);
-            },
-            error: function(xhr, status, error) {
-                console.error("Error deleting product:", error);
-                }
-        });
-                
-                
-        // without end point
-        // var row = btn.parentNode.parentNode;
-        // row.parentNode.removeChild(row);
-    }
-</script>
-
-</body>
-
+        // Function to delete row
+        function deleteRow(btn) {
+            // with end point
+            var row = btn.parentNode.parentNode;
+            var ownerName = row.cells[0].innerText.trim(); // Get the owner name from the first column
+            var itemName = row.cells[1].innerText.trim(); // Get the product name from the second column
+            var token = getTokenFromUrl() || localStorage.getItem("token");
+            console.log(ownerName, itemName);
+            
+            $.ajax({
+                url: "/deleteProduct", // URL of the deleteProduct endpoint
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
+                data: { ownerName: ownerName, itemName: itemName }, // Send the product name as data to the backend
+                success: function(response) {
+                    // Remove the row from the table if the deletion was successful
+                    row.parentNode.removeChild(row);
+                    console.log("Product deleted successfully:", response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error deleting product:", error);
+                    }
+            });
+        }
+    </script>
+    </body>
 </html>

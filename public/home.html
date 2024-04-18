@@ -11,7 +11,6 @@
                     url: "/products", // URL to fetch products from backend
                     type: "GET",
                     success: function (response) {
-                        // Handle successful response
                         displayProducts(response);
                     },
                     error: function (xhr, status, error) {
@@ -27,7 +26,6 @@
 
                 products.forEach(function (product, index) {
                     var row = "<tr>" +
-                    // "<td>" + (index + 1) + "</td>" +
                     "<td>" + product.ownerName + "</td>" +
                     "<td>" + product.itemName + "</td>" +
                     "<td>" + product.basicAmount + "</td>" +
@@ -44,17 +42,14 @@
     </script>
 </head>
 <body>
-
     <center>
         <h2>Available Auction</h2>
     </center>
-
     <a id="loginID" href="login.html">Login</a>
     
     <table>
         <thead>
             <tr>
-                <!-- <th>SNo.</th> -->
                 <th>Owner Name</th>
                 <th>Product Name</th>
                 <th>Bid Amount</th>

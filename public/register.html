@@ -8,7 +8,6 @@
     <div class="container">
         <center><h2>User Registration</h2></center>
         <form action="/register" method="POST">
-            <!-- {% csrf_token %} -->
             <div class="form-group">
                 <label for="username">Name:</label>
                 <input type="text" id="username" name="username" required>
@@ -25,8 +24,11 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <center><input type="submit" value="Register"></center>
+            <center>
+                <input type="submit" value="Register">
+            </center>
         </form>
+        <p>Already have an account? <a href="login.html">Login here</a></p>
     </div>
 </body>
 </html>

@@ -1,97 +1,95 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>Auction Item Form</title>
+        <link rel="stylesheet" type="text/css" href="applybidC.css">
+    </head>
 
-<head>
-    <title>Auction Item Form</title>
-    <link rel="stylesheet" type="text/css" href="applybidC.css">
-</head>
+    <body>
+        <div class="form-container">
+            <h2>Auction Participation Form</h2>
+            <form id="bidForm" action="/bid" method="POST">
+                <div>
+                    <label for="ownerName">Owner Name:</label>
+                    <input type="text" id="ownerName" name="ownerName" readonly>
+                </div>
+                <div>
+                    <label for="itemName">Item Name:</label>
+                    <input type="text" id="itemName" name="itemName" readonly>
+                </div>
+                <div>
+                    <label for="bidAmount">Current Amount:</label>
+                    <input type="number" id="bidAmount" name="currAmount" readonly>
+                </div>
+                <div>
+                    <label for="max_bid">Your Bid:</label>
+                    <input type="number" id="max_bid" name="bidAmount" required>
+                </div>
+                <div>
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
 
-<body>
-    <div class="form-container">
-        <h2>Auction Participation Form</h2>
-        <form id="bidForm" action="/bid" method="POST">
-            <div>
-                <label for="ownerName">Owner Name:</label>
-                <input type="text" id="ownerName" name="ownerName" readonly>
-            </div>
-            <div>
-                <label for="itemName">Item Name:</label>
-                <input type="text" id="itemName" name="itemName" readonly>
-            </div>
-            <div>
-                <label for="bidAmount">Current Amount:</label>
-                <input type="number" id="bidAmount" name="currAmount" readonly>
-            </div>
-            <div>
-                <label for="max_bid">Your Bid:</label>
-                <input type="number" id="max_bid" name="bidAmount" required>
-            </div>
-            <div>
-                <input type="submit" value="Submit">
-            </div>
-        </form>
-    </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var itemNameInput = document.getElementById("itemName");
+                var ownerNameInput = document.getElementById("ownerName");
+                var bidAmountInput = document.getElementById("bidAmount");
+                var maxBidInput = document.getElementById("max_bid");
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                // Function to decode URL parameters
+                function getUrlParameter(name) {
+                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                    var results = regex.exec(location.search);
+                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+                }
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var itemNameInput = document.getElementById("itemName");
-            var ownerNameInput = document.getElementById("ownerName");
-            var bidAmountInput = document.getElementById("bidAmount");
-            var maxBidInput = document.getElementById("max_bid");
+                // Function to get token from URL or local storage
+                function getTokenFromUrl() {
+                    var urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get('token');
+                }
 
-            // Function to decode URL parameters
-            function getUrlParameter(name) {
-                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-                var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-                var results = regex.exec(location.search);
-                return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-            }
+                var token = getTokenFromUrl() || localStorage.getItem("token");
+                var itemName = getUrlParameter('itemName');
+                var ownerName = getUrlParameter('ownerName');
+                var basicAmount = getUrlParameter('basicAmount');
 
-            // Function to get token from URL or local storage
-            function getTokenFromUrl() {
-                var urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get('token');
-            }
+                // console.log(token);
+                
+                // Populate form fields with decoded values
+                itemNameInput.value = itemName;
+                ownerNameInput.value = ownerName;
+                bidAmountInput.value = basicAmount;
+                maxBidInput.min = basicAmount;
 
-            var token = getTokenFromUrl() || localStorage.getItem("token");
-            var itemName = getUrlParameter('itemName');
-            var ownerName = getUrlParameter('ownerName');
-            var basicAmount = getUrlParameter('basicAmount');
+                document.getElementById("bidForm").addEventListener("submit", function (event) {
+                    event.preventDefault(); // Prevent default form submission
 
-            console.log(token);
-            // Populate form fields with decoded values
-            itemNameInput.value = itemName;
-            ownerNameInput.value = ownerName;
-            bidAmountInput.value = basicAmount;
-            maxBidInput.min = basicAmount;
+                    var formData = $(this).serialize(); // Serialize form data
+                    var url = $(this).attr("action"); // Get the form action URL
 
-            document.getElementById("bidForm").addEventListener("submit", function (event) {
-                event.preventDefault(); // Prevent default form submission
+                    $.ajax({
+                        url: '/bid',
+                        type: "POST",
+                        headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
+                        data: formData,
+                        success: function(response) {
+                            // Handle the redirection
+                            window.location.href = '/base.html?token=' + token;
+                            console.log("Bid successful");
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error adding product:", error);
+                        }
+                    });
 
-                var formData = $(this).serialize(); // Serialize form data
-                var url = $(this).attr("action"); // Get the form action URL
-
-                $.ajax({
-                    url: '/bid',
-                    type: "POST",
-                    headers: { "Authorization": "Bearer " + token }, // Include the token in the request headers
-                    data: formData,
-                    success: function(response) {
-                        // Handle the redirection
-                        window.location.href = '/base.html?token=' + token;
-                        console.log("Bid successful");
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error adding product:", error);
-                    }
                 });
 
             });
-
-        });
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>

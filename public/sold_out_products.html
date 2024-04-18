@@ -24,8 +24,6 @@
                         "Authorization": "Bearer " + token // Pass the token as a Bearer token in the Authorization header
                     },
                     success: function (response) {
-                        // console.log("h1");
-                        // Handle successful response
                         displayProducts(response);
                     },
                     error: function (xhr, status, error) {
@@ -41,7 +39,6 @@
 
                 products.forEach(function (product, index) {
                     var row = "<tr>" +
-                        // "<td>" + (index + 1) + "</td>" +
                         "<td>" + product.ownerName + "</td>" +
                         "<td>" + product.itemName + "</td>" +
                         "<td>" + product.bidder + "</td>" +
@@ -57,17 +54,14 @@
 </head>
 
 <body>
-
     <center>
         <h2>Sold out Products</h2>
     </center>
-
     <a id="baseLink" href="#">Back to home page</a>
 
     <table>
         <thead>
             <tr>
-                <!-- <th>SNo.</th> -->
                 <th>Owner Name</th>
                 <th>Product Name</th>
                 <th>Sold To</th>
